@@ -27,7 +27,8 @@
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
-
+    <button onclick="buzzIn()" class="buzzer">Buzzer</button>
+    <button onclick="resetBuzzer()" class="buzzer">Reset Buzzer</button>
 
 
     <script src="/socket.io/socket.io.js"></script>
@@ -61,6 +62,14 @@
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight)
         })
+
+        const buzzIn = () => {
+            socket.emit('buzzer')
+        }
+        
+        const resetBuzzer = () => {
+            socket.emit('reset buzzer')
+        }
     </script>
 </body>
 </html>
