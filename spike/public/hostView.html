@@ -8,5 +8,38 @@
 <body>
     <h1>Host View</h1>
     <p>You are on the host view page</p>
+    <p>The room code is: <span id="roomCode">NULL</span></p>
+
+    <form id="roomGen">
+        <button>Generate Room</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const roomForm = document.querySelector('#roomGen');
+        const roomCode = document.querySelector('#roomCode');
+
+        roomForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+             socket.emit('room request');
+        })
+
+        const getRandomChar = () => {
+            const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
+            return letter;
+        }
+
+        const getStringOfFour = () => {
+            let letters = '';
+            for (let i = 0; i < 4; i++) {
+                letters += getRandomChar()
+            }
+            return letters
+        } 
+
+        socket.on('room request confirm', (room) => {
+            roomCode.textContent = room;
+        })
+    </script>
 </body>
 </html>

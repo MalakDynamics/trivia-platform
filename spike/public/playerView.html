@@ -21,7 +21,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-around; 
-            background-color: aqua;
             height: 30rem;
             width: 22.5rem;
             border: solid blue 2px;
@@ -51,20 +50,41 @@
 <body>
     <div id="signInCard">
         <h2>Enter Room Number</h2>
-        <form>
+        <form id="roomForm">
             <input type="text" id="roomCode" maxlength="4"
                 autocapitalize="characters"
                 autocomplete="off"
                 autocorrect="off"
                 spellcheck="false">
-            <button onclick="enterRoom()">Enter Room</button>
+            <button id="roomButton">Enter Room</button>
+            <p style="margin: 0;" id="signInStatus">.</p>
         </form>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        const enterRoom = (e) => {
+        const socket = io();
+
+        const signInForm = document.querySelector('#roomForm');
+        const signInInput = document.querySelector('#roomCode');
+        const signInButton = document.querySelector('#roomButton');
+        const status = document.querySelector('#signInStatus');
+
+        signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            console.log(e.log)
-        };
+            if (signInInput.value.length === 4) {
+                const roomCode = signInInput.value.toUpperCase()
+                socket.emit('join request', roomCode)
+            }
+        })
+
+        socket.on('join request result', (result) => {
+            if (result) {
+                status.textContent = `Joined room`;
+                status.style.color = 'green';
+                return;
+            } status.textContent = `Not Found`;
+            status.style.color = 'red';
+        })
 
     </script>
 </body>

@@ -64,6 +64,8 @@
             window.scrollTo(0, document.body.scrollHeight)
         })
 
+
+
         const buzzIn = () => {
             socket.emit('buzzer')
         }
@@ -71,6 +73,7 @@
         const resetBuzzer = () => {
             socket.emit('reset buzzer')
         }
+
     </script>
 </body>
 </html>
