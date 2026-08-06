@@ -6,14 +6,29 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-const gameRooms = new Map();
+const gameRooms = new Set();
 const userNames = new Map();
 const activeUsers = {};
 const buzzWinner = [];
 
 
+
+// Utility functions to generate room code
+const getRandomChar = () => {
+    const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
+    return letter;
+}
+
+const getStringOfFour = () => {
+    let letters = '';
+    for (let i = 0; i < 4; i++) {
+        letters += getRandomChar()
+    }
+    return letters
+} 
+
 // TEST ENTRY
-gameRooms.set('AAAA')
+gameRooms.add('AAAA')
 
 /*
 Need to build function that determines who clicked in first, 
@@ -58,7 +73,17 @@ io.on("connection", (socket) => {
     })
 
     socket.on('join request', (roomCode) => {
-        io.emit('join request result', gameRooms.has(roomCode))
+        const roomExists = gameRooms.has(roomCode); 
+
+        if (!roomExists) {
+            socket.emit('join request result', [false, roomCode]);
+            return;
+        }
+
+        socket.join(roomCode);
+        socket.emit('join request result', [true, roomCode])
+        
+
         console.log(`${socket.id} tried using room code ${roomCode}. Result: ${gameRooms.has(roomCode)}`)
     })
 
@@ -67,9 +92,9 @@ io.on("connection", (socket) => {
         while (gameRooms.has(roomCode)) {
             roomCode = getStringOfFour();
         }
-        gameRooms.set(roomCode)
+        gameRooms.add(roomCode)
         console.log(`room request made, added ${roomCode} to roomMap`)
-        io.emit('room request confirm', roomCode);
+        socket.emit('room request confirm', roomCode);
     })
 
     socket.on("disconnect", () => {
@@ -81,18 +106,5 @@ io.on("connection", (socket) => {
 
 
 });
-// Utility functions to generate room code
-const getRandomChar = () => {
-    const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
-    return letter;
-}
-
-const getStringOfFour = () => {
-    let letters = '';
-    for (let i = 0; i < 4; i++) {
-        letters += getRandomChar()
-    }
-    return letters
-} 
 
 httpServer.listen(3000, () => console.log("http://localhost:3000"));
