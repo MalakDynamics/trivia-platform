@@ -50,52 +50,61 @@ const determineBuzzWinner = (userId) => {
 app.use(express.static("public"));
 
 io.on("connection", (socket) => {
+    let currentRoom = null; // stores gameroom for individual player
+
     console.log("connected", socket.id);
 
     // Emits a chat message to all users
-    socket.on("chat message", (msg) => {
+    socket.on("player:message", (msg) => {
         console.log('message: ', msg);
-        io.emit('chat message', userNames.get(socket.id) + ': ' + msg)
+        io.emit('player:message', userNames.get(socket.id) + ': ' + msg)
     });
     
     // add username to userNames map
-    socket.on('username value', (name) => {
+    socket.on('player:set-name', (name) => {
         userNames.set(socket.id, name)
     })
     
-    socket.on('buzzer', () => {
+    socket.on('player:buzz', () => {
         let winner = determineBuzzWinner(socket.id)
         console.log('Did you win?: ', winner);
     })
 
-    socket.on('reset buzzer', () => {
+    socket.on('buzzer:reset', () => {
         buzzWinner.length = 0;
     })
 
-    socket.on('join request', (roomCode) => {
+    socket.on('room:join', (roomCode) => {
         const roomExists = gameRooms.has(roomCode); 
 
         if (!roomExists) {
-            socket.emit('join request result', [false, roomCode]);
+            socket.emit('room:joined', [false, roomCode]);
             return;
         }
 
         socket.join(roomCode);
-        socket.emit('join request result', [true, roomCode])
+        currentRoom = roomCode;
+        socket.emit('room:joined', [true, roomCode])
         
 
         console.log(`${socket.id} tried using room code ${roomCode}. Result: ${gameRooms.has(roomCode)}`)
     })
 
-    socket.on('room request', () => {
+    socket.on('room:create', () => {
         let roomCode = getStringOfFour();
         while (gameRooms.has(roomCode)) {
             roomCode = getStringOfFour();
         }
         gameRooms.add(roomCode)
         console.log(`room request made, added ${roomCode} to roomMap`)
-        socket.emit('room request confirm', roomCode);
+        socket.emit('room:created', roomCode);
     })
+
+    socket.on('room:message', (msg) => {
+            if (currentRoom) {
+                io.to(currentRoom).emit('room:message', msg);
+            }
+        })
 
     socket.on("disconnect", () => {
         console.log("disconnected", socket.id);

@@ -60,6 +60,15 @@
             <p style="margin: 0;" id="signInStatus">.</p>
         </form>
     </div>
+    <div class="chatRoom">
+        <ul id="messages"></ul>
+        <form id="chatForm">
+            <input type="text" id="chatInput">
+            <button id="chatSubmit">Submit</button>
+        </form>
+
+
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
@@ -67,17 +76,22 @@
         const signInForm = document.querySelector('#roomForm');
         const signInInput = document.querySelector('#roomCode');
         const signInButton = document.querySelector('#roomButton');
+
+        const messages = document.querySelector('#messages');
+        const chatForm = document.querySelector('#chatForm');
+        const chatInput = document.querySelector('#chatInput');
+        const chatButton = document.querySelector('#chatSubmit');
+
         const status = document.querySelector('#signInStatus');
 
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (signInInput.value.length === 4) {
                 const roomCode = signInInput.value.toUpperCase()
-                socket.emit('join request', roomCode)
+                socket.emit('room:join', roomCode)
             }
-        })
-
-        socket.on('join request result', (result) => {
+        });
+        socket.on('room:joined', ([result, roomCode]) => {
             if (result) {
                 status.textContent = `Joined room`;
                 status.style.color = 'green';
@@ -85,6 +99,24 @@
             } status.textContent = `Not Found`;
             status.style.color = 'red';
         })
+
+        
+        
+        
+        // We got chat functionality!
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(chatInput.value.length > 0) {
+                socket.emit('room:message', chatInput.value);
+                chatInput.value = '';
+            }
+        })
+        socket.on('room:message', (msg) => {
+            const item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+        })
+        
 
     </script>
 </body>

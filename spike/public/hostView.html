@@ -21,7 +21,7 @@
 
         roomForm.addEventListener('submit', (e) => {
             e.preventDefault();
-             socket.emit('room request');
+             socket.emit('room:create');
         })
 
         const getRandomChar = () => {
@@ -37,7 +37,7 @@
             return letters
         } 
 
-        socket.on('room request confirm', (room) => {
+        socket.on('room:created', (room) => {
             roomCode.textContent = room;
         })
     </script>

@@ -45,7 +45,7 @@
         chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (chatInput.value) {
-                socket.emit('chat message', chatInput.value)
+                socket.emit('player:message', chatInput.value)
                 chatInput.value = '';
             }
         });
@@ -53,11 +53,11 @@
         nameForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (nameInput.value) {
-                socket.emit('username value', nameInput.value);
+                socket.emit('player:set-name', nameInput.value);
             }
         });
 
-        socket.on('chat message', (msg) => {
+        socket.on('player:message', (msg) => {
             const item = document.createElement('li');
             item.textContent = msg;
             messages.appendChild(item);
@@ -67,11 +67,11 @@
 
 
         const buzzIn = () => {
-            socket.emit('buzzer')
+            socket.emit('player:buzz')
         }
         
         const resetBuzzer = () => {
-            socket.emit('reset buzzer')
+            socket.emit('buzzer:reset')
         }
 
     </script>
