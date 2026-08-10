@@ -4,7 +4,13 @@ import { Server } from "socket.io";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
 
 const gameRooms = new Set();
 const userNames = new Map();
@@ -27,7 +33,7 @@ const getStringOfFour = () => {
     return letters
 } 
 
-// TEST ENTRY
+// TEST ENTRY: DELETE LATER
 gameRooms.add('AAAA')
 
 /*
@@ -74,6 +80,7 @@ io.on("connection", (socket) => {
     socket.on('room:join', (roomCode) => {
         const roomExists = gameRooms.has(roomCode); 
 
+        console.log(`${socket.id} tried using room code ${roomCode}. Result: ${gameRooms.has(roomCode)}`)
         if (!roomExists) {
             socket.emit('room:joined', [false, roomCode]);
             return;
@@ -84,7 +91,6 @@ io.on("connection", (socket) => {
         socket.emit('room:joined', [true, roomCode])
         
 
-        console.log(`${socket.id} tried using room code ${roomCode}. Result: ${gameRooms.has(roomCode)}`)
     })
 
     socket.on('room:create', () => {
