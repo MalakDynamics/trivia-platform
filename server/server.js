@@ -38,6 +38,19 @@ const getStringOfFour = () => {
     return letters
 } 
 
+const usernameDuplicateProtection = (name, room) => {
+    const suffixes = ['Jr.', 'III', 'IV', 'V',
+        'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
+    ]
+    let userList = [...room.players.values()].map(user => user.name); 
+    if (!userList.includes(name)) return name;
+
+    for (const suffix of suffixes) {
+        const potentialName = name + ' ' + suffix;
+        if (!userList.includes(potentialName)) return potentialName;
+    }
+}
+
 // TEST ENTRY: DELETE LATER
 gameRooms.set('AAAA', {players: new Map(), phase: 'lobby'})
 
@@ -65,7 +78,9 @@ io.on("connection", (socket) => {
     // add username to userNames map
     socket.on('player:set-name', (userName) => {
         let room = gameRooms.get(currentRoom);
-        room.players.set(socket.id, {name: userName, ready: false})
+        const transformedUsername = usernameDuplicateProtection(userName, room)
+
+        room.players.set(socket.id, {name: transformedUsername, ready: false});
 
         let userList = [...room.players.values()].map(user => user.name);        
         io.to(currentRoom).emit('room:playerList', userList)
