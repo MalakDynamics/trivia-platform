@@ -1,3 +1,10 @@
+/*
+HUGE ISSUE: 
+THis setup does not currently protect on refresh and will exit a game
+Need
+
+*/
+
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from "socket.io";
@@ -12,9 +19,7 @@ const io = new Server(httpServer, {
   }
 });
 
-const gameRooms = new Set();
-const userNames = new Map();
-const activeUsers = {};
+const gameRooms = new Map();
 const buzzWinner = [];
 
 
@@ -34,7 +39,7 @@ const getStringOfFour = () => {
 } 
 
 // TEST ENTRY: DELETE LATER
-gameRooms.add('AAAA')
+gameRooms.set('AAAA', {players: new Map(), phase: 'lobby'})
 
 /*
 Need to build function that determines who clicked in first, 
@@ -56,16 +61,14 @@ io.on("connection", (socket) => {
     let currentRoom = null; // stores gameroom for individual player
 
     console.log("connected", socket.id);
-
-    // Emits a chat message to all users
-    socket.on("player:message", (msg) => {
-        console.log('message: ', msg);
-        io.emit('player:message', userNames.get(socket.id) + ': ' + msg)
-    });
     
     // add username to userNames map
-    socket.on('player:set-name', (name) => {
-        userNames.set(socket.id, name)
+    socket.on('player:set-name', (userName) => {
+        let room = gameRooms.get(currentRoom);
+        room.players.set(socket.id, {name: userName, ready: false})
+
+        let userList = [...room.players.values()].map(user => user.name);        
+        io.to(currentRoom).emit('room:playerList', userList)
     })
     
     socket.on('player:buzz', () => {
@@ -79,39 +82,56 @@ io.on("connection", (socket) => {
 
     socket.on('room:join', (roomCode) => {
         const roomExists = gameRooms.has(roomCode); 
-
+        let gameRoom;
         console.log(`${socket.id} tried using room code ${roomCode}. Result: ${gameRooms.has(roomCode)}`)
         if (!roomExists) {
-            socket.emit('room:joined', [false, roomCode]);
+            socket.emit('room:joined', [false, gameRoom]);
             return;
         }
 
         socket.join(roomCode);
         currentRoom = roomCode;
-        socket.emit('room:joined', [true, roomCode])
+        gameRoom = gameRooms.get(currentRoom)
+
+        socket.emit('room:joined', [true, gameRoom])
         
 
     })
 
     socket.on('room:create', () => {
+
         let roomCode = getStringOfFour();
         while (gameRooms.has(roomCode)) {
             roomCode = getStringOfFour();
         }
-        gameRooms.add(roomCode)
+        // WE WILL BE ADDING HERE TO GAME STATE
+        gameRooms.set(roomCode, {players: new Map(), phase: 'lobby'})
         console.log(`room request made, added ${roomCode} to roomMap`)
         socket.emit('room:created', roomCode);
     })
 
     socket.on('room:message', (msg) => {
             if (currentRoom) {
-                io.to(currentRoom).emit('room:message', msg);
+                io.to(currentRoom).emit('room:message', {
+                    id: socket.id,
+                    name: gameRooms.get(currentRoom).players.get(socket.id).name,
+                    text: msg,
+                    ts: Date.now()
+                });
             }
         })
 
     socket.on("disconnect", () => {
         console.log("disconnected", socket.id);
-        userNames.delete(socket.id);
+        if (gameRooms.has(currentRoom)) {
+            let room = gameRooms.get(currentRoom)
+            room.players.delete(socket.id)
+            console.log(room.players);
+            
+            let userList = [...room.players.values()].map(user => user.name);
+            io.to(currentRoom).emit('room:playerList', userList);
+        }
+
     })
     
 

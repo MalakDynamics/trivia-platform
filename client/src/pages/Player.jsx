@@ -5,16 +5,36 @@ import Chatroom from "../assets/Chatroom";
 export default function Player() {
     const [phase, setPhase] = useState("join"); // what stp the client is in
     const [codeInput, setCodeInput] = useState(""); // the 4-char code field
+    const [joinError, setJoinError] = useState(null);
     const [name, setName] = useState(""); // username
-
+    const [userList, setUserList] = useState([]);
+    
     useEffect(() => {
         const handleRoomJoined = ([success, roomCode]) => {
             if (success) {
-                setPhase("chooseUsername")
+                setPhase("chooseUsername");
+                setJoinError(null);
+            } else {
+                setJoinError(`That room doesn't exist.`)
             }
         }
+
+        const handleUserJoin = (users) => {
+            console.log([...users]);
+            if (users) {
+                setUserList(users);
+            }
+            
+        }
         
-        socket.on('room:joined', handleRoomJoined)
+        socket.on('room:joined', handleRoomJoined);
+        socket.on('room:playerList', handleUserJoin);
+
+
+        return () => {
+            socket.off('room:joined', handleRoomJoined);
+            socket.off('room:playerList', handleUserJoin);
+        }
         
     }, [])
     const handleRoomSubmit = (e) => {
@@ -23,11 +43,11 @@ export default function Player() {
         
         console.log('handleroom triggered');
         if (codeInput.length === 4) {
-                const roomCode = codeInput.toUpperCase()
-                socket.emit('room:join', roomCode)
-            }
+            const roomCode = codeInput.toUpperCase()
+            socket.emit('room:join', roomCode)
+        }
     }
-
+    
     const handleNameSubmit = (e) => {
         e.preventDefault();
         console.log('handlename triggered');
@@ -47,7 +67,9 @@ export default function Player() {
                     <input 
                     type="text"
                     value={codeInput}
-                    onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                    onChange={(e) => {
+                        setCodeInput(e.target.value.toUpperCase());
+                        setJoinError(null)}}
                     maxLength={4}
                     />
                     <button
@@ -55,6 +77,11 @@ export default function Player() {
                     >
                         Join Room
                     </button>
+                    <p 
+                        style={{
+                            display: joinError ? 'block' : 'none',
+                            color: 'red',
+                        }}>Invalid Code entered</p>
                 </form>
             </div>
         )
@@ -70,6 +97,7 @@ export default function Player() {
                     <input 
                     type="text"
                     value={name}
+                    maxLength={20}
                     onChange={(e) => setName(e.target.value)} />
                     <button
                     disabled={name.length === 0}>
@@ -86,6 +114,14 @@ export default function Player() {
             <div>
                 <h1>Player Lobby</h1>
                 <Chatroom />
+                <div>
+                    <h3>players:</h3>
+                    <ul>
+                        {userList.map((player, index) => (
+                            <li key={index}>{player}</li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         )
 
