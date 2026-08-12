@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { socket } from "../socket";
-import Chatroom from "../assets/Chatroom";
+import Chatroom from "../components/Chatroom";
+import { useChat } from "../hooks/useChat";
 
 export default function Player() {
     const [phase, setPhase] = useState("join"); // what stp the client is in
+    const { messages, send } = useChat();
     const [codeInput, setCodeInput] = useState(""); // the 4-char code field
     const [joinError, setJoinError] = useState(null);
     const [name, setName] = useState(""); // username
@@ -113,7 +115,7 @@ export default function Player() {
         return (
             <div>
                 <h1>Player Lobby</h1>
-                <Chatroom />
+                <Chatroom messages={messages} onSend={send} />
                 <div>
                     <h3>players:</h3>
                     <ul>

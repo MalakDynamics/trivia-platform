@@ -131,6 +131,7 @@ io.on("connection", (socket) => {
                     id: socket.id,
                     name: gameRooms.get(currentRoom).players.get(socket.id).name,
                     text: msg,
+                    msgId: crypto.randomUUID(),
                     ts: Date.now()
                 });
             }
