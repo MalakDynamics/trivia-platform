@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { socket } from "../socket";
 import { useChat } from "../hooks/useChat";
 import { useParams, useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function Board() {
     const { roomCode } = useParams();
@@ -45,6 +46,7 @@ export default function Board() {
         return (
             <div>
                 <h1>Game Code Is: {gameCode}</h1>
+                <QRCodeSVG value={`http://192.168.50.32:5173/player/${roomCode}`} size={256} />
             </div>
         )
     }
