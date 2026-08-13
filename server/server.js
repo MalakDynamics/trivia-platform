@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
         let gameRoom;
         console.log(`${socket.id} tried using room code ${roomCode}. Result: ${gameRooms.has(roomCode)}`)
         if (!roomExists) {
-            socket.emit('room:joined', [false, gameRoom]);
+            socket.emit('room:joined', [false, gameRoom, roomCode]);
             return;
         }
 
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
         currentRoom = roomCode;
         gameRoom = gameRooms.get(currentRoom)
 
-        socket.emit('room:joined', [true, gameRoom])
+        socket.emit('room:joined', [true, gameRoom, roomCode])
         
 
     })

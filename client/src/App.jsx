@@ -21,12 +21,10 @@ function App() {
     <Routes>
       {/* <Route path="/board" element={<Board />} /> */}
       {/* <Route path="/host/:roomCode" element={<Host />} /> */}
-      <Route path="/play" element={<Player />} />
-      <Route path="/play/:roomCode" element={<Player />} />
+      <Route path="/player" element={<Player />} />
+      <Route path="/player/:roomCode" element={<Player />} />
     </Routes>
   )
-  const isHost = window.location.search.includes("host")
-  return isHost ? <Host /> : <Player />;
 }
 
 export default App

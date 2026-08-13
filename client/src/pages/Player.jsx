@@ -2,20 +2,32 @@ import { useState, useEffect } from "react";
 import { socket } from "../socket";
 import Chatroom from "../components/Chatroom";
 import { useChat } from "../hooks/useChat";
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function Player() {
-    const [phase, setPhase] = useState("join"); // what step the client is in
+    const { roomCode } = useParams();
+    const navigate = useNavigate();
+
+    const [phase, setPhase] = useState(roomCode ? "chooseUsername" : "join"); // what step the client is in
     const { messages, send } = useChat();
     const [codeInput, setCodeInput] = useState(""); // the 4-char code field
     const [joinError, setJoinError] = useState(null);
     const [name, setName] = useState(""); // username
     const [userList, setUserList] = useState([]);
+
     
     useEffect(() => {
-        const handleRoomJoined = ([success, roomCode]) => {
+        if (roomCode) {
+            socket.emit('room:join', roomCode.toUpperCase());
+        }
+
+        const handleRoomJoined = ([success, __, returnedCode,]) => {
             if (success) {
                 setPhase("chooseUsername");
                 setJoinError(null);
+                console.log(success);
+                
+                navigate(`/player/${returnedCode}`)
             } else {
                 setJoinError(`That room doesn't exist.`)
             }
