@@ -1,5 +1,6 @@
 import './App.css'
 import  Player  from './pages/Player'
+import Board from './pages/Board'
 import { Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
 */
   return (
     <Routes>
-      {/* <Route path="/board" element={<Board />} /> */}
+      <Route path="/board" element={<Board />} />
+      <Route path="/board/:roomCode" element={<Board />} />
       {/* <Route path="/host/:roomCode" element={<Host />} /> */}
       <Route path="/player" element={<Player />} />
       <Route path="/player/:roomCode" element={<Player />} />
