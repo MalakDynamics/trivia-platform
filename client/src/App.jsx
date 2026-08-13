@@ -1,5 +1,6 @@
 import './App.css'
 import  Player  from './pages/Player'
+import { Routes, Route } from 'react-router-dom'
 
 function App() {
 /*
@@ -16,6 +17,14 @@ function App() {
     return id;
   }
 */
+  return (
+    <Routes>
+      {/* <Route path="/board" element={<Board />} /> */}
+      {/* <Route path="/host/:roomCode" element={<Host />} /> */}
+      <Route path="/play" element={<Player />} />
+      <Route path="/play/:roomCode" element={<Player />} />
+    </Routes>
+  )
   const isHost = window.location.search.includes("host")
   return isHost ? <Host /> : <Player />;
 }

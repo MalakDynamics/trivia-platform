@@ -4,7 +4,7 @@ import Chatroom from "../components/Chatroom";
 import { useChat } from "../hooks/useChat";
 
 export default function Player() {
-    const [phase, setPhase] = useState("join"); // what stp the client is in
+    const [phase, setPhase] = useState("join"); // what step the client is in
     const { messages, send } = useChat();
     const [codeInput, setCodeInput] = useState(""); // the 4-char code field
     const [joinError, setJoinError] = useState(null);
