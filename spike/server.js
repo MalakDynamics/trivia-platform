@@ -95,6 +95,7 @@ io.on("connection", (socket) => {
         while (gameRooms.has(roomCode)) {
             roomCode = getStringOfFour();
         }
+        socket.join(roomCode);
         gameRooms.add(roomCode)
         console.log(`room request made, added ${roomCode} to roomMap`)
         socket.emit('room:created', roomCode);

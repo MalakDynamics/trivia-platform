@@ -1,3 +1,5 @@
+// need to add joining view, prevent player:set-name from crashing system
+// If chooseUserame and send to false room the whole server will crash
 import { useState, useEffect } from "react";
 import { socket } from "../socket";
 import Chatroom from "../components/Chatroom";
@@ -8,29 +10,26 @@ export default function Player() {
     const { roomCode } = useParams();
     const navigate = useNavigate();
 
-    const [phase, setPhase] = useState(roomCode ? "chooseUsername" : "join"); // what step the client is in
+    const [phase, setPhase] = useState(roomCode ? "joining" : "join"); // what step the client is in
     const { messages, send } = useChat();
     const [codeInput, setCodeInput] = useState(""); // the 4-char code field
     const [joinError, setJoinError] = useState(null);
     const [name, setName] = useState(""); // username
     const [userList, setUserList] = useState([]);
+    const [dotCount, setDotCount] = useState(0);
 
     
     useEffect(() => {
-        if (roomCode) {
-            socket.emit('room:join', roomCode.toUpperCase());
-        }
+        if (phase !== 'joining') return;
+        const intervalId = setInterval(() => {
+            setDotCount((prev) => (prev + 1) % 4);
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, [phase]);
 
-        const handleRoomJoined = ([success, __, returnedCode,]) => {
-            if (success) {
-                setPhase("chooseUsername");
-                setJoinError(null);
-                console.log(success);
-                
-                navigate(`/player/${returnedCode}`)
-            } else {
-                setJoinError(`That room doesn't exist.`)
-            }
+    useEffect(() => {
+        if (roomCode) {
+            attemptJoin(roomCode.toUpperCase());
         }
 
         const handleUserJoin = (users) => {
@@ -40,25 +39,34 @@ export default function Player() {
             }
             
         }
-        
-        socket.on('room:joined', handleRoomJoined);
+
         socket.on('room:playerList', handleUserJoin);
 
 
         return () => {
-            socket.off('room:joined', handleRoomJoined);
             socket.off('room:playerList', handleUserJoin);
         }
         
     }, [])
+
+    const attemptJoin = (code) => {
+        socket.emit('room:join', code, 'player', (response) => {
+            if (response.ok) {
+                setPhase('chooseUsername');
+                navigate(`/player/${code}`);
+            } else {
+                setJoinError(response.error)
+            }
+        })
+    }
+
     const handleRoomSubmit = (e) => {
         e.preventDefault();
         console.log(socket.connected);
         
         console.log('handleroom triggered');
         if (codeInput.length === 4) {
-            const roomCode = codeInput.toUpperCase()
-            socket.emit('room:join', roomCode)
+            attemptJoin(codeInput);
         }
     }
     
@@ -101,6 +109,15 @@ export default function Player() {
         )
     }
 
+
+
+    if (phase === 'joining') {
+        return (
+            <div>
+                <h1>Joining{'.'.repeat(dotCount)}</h1>
+            </div>
+        );
+    }
 
     // after code is entered, add username
     if (phase === "chooseUsername") {
