@@ -36,6 +36,7 @@ export const createRoom = (boardSocketId) => {
     host: null,
     board: boardSocketId,
     phase: 'lobby',
+    game: null,
   };
   gameRooms.set(roomCode, room);
 

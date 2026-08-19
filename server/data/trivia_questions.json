@@ -1,0 +1,127 @@
+[
+  {
+    "category": "Huskies",
+    "questions": [
+      {
+        "question": "What is the primary geographic origin of the Siberian Husky breed?",
+        "options": ["Siberia, Russia", "Alaska, USA", "Northern Canada", "Greenland"]
+      },
+      {
+        "question": "What were Huskies originally bred to do?",
+        "options": ["Pull sleds", "Herd sheep", "Hunt birds", "Guard livestock"]
+      },
+      {
+        "question": "What distinctive trait is common in Huskies (sometimes one eye of each color)?",
+        "options": ["Heterochromia", "Achromatopsia", "Chronocasnia", "Polydactyly"]
+      },
+      {
+        "question": "Which breed is most commonly confused with the Husky due to similar appearance?",
+        "options": ["Alaskan Malamute", "Border Collie", "Akita", "Samoyed"]
+      },
+      {
+        "question": "Also known as the \"Great Race of Mercy\" What famous 1925 event involved sled dogs delivering medicine to Nome, Alaska?",
+        "options": ["The Serum Run", "Eukanuba Tournament", "The Iditarod", "The Snow Bowl"]
+      }
+    ]
+  },
+  {
+    "category": "Yoyos",
+    "questions": [
+      {
+        "question": "What's it called when a yoyo spins at the end of the string without returning?",
+        "options": ["Sleeper", "Looper", "Walker", "Spinner"]
+      },
+      {
+        "question": "This company was acquired in 1932 by Duncan F. Duncan, starting the yoyo craze",
+        "options": ["Flores Yoyos", "Yomega", "Whirligig Toys", "The Yo Store"]
+      },
+      {
+        "question": "What component lets modern yoyos \"sleep\" much longer, enabling advanced tricks?",
+        "options": ["Ball bearing axle", "Wooden core", "Rubber grip", "String loop lock"]
+      },
+      {
+        "question": "The modern yoyo craze in America traces back to a traditional toy design from which country?",
+        "options": ["Philippines", "China", "Japan", "Mexico"]
+      },
+      {
+        "question": "This style of yoyoing involves manipulating two yoyos not attached to the string",
+        "options": ["Counterweight", "Offstring", "Soloham", "Sidestyle"]
+      }
+    ]
+  },
+  {
+    "category": "Gilmore Girls",
+    "questions": [
+      {
+        "question": "What's the name of the fictional Connecticut town where the show is set?",
+        "options": ["Stars Hollow", "Hartford", "Chilton", "Willow Creek"]
+      },
+      {
+        "question": "What is Rory Gilmore's actual first name (before her nickname)?",
+        "options": ["Lorelai", "Victoria", "Emily", "Alexandra"]
+      },
+      {
+        "question": "What prep school does Rory attend before college?",
+        "options": ["Chilton", "Choate", "Exeter", "Andover"]
+      },
+      {
+        "question": "What's the name of Luke's diner in Stars Hollow?",
+        "options": ["Luke's Diner", "Doose's Market", "Weston's Bakery", "Sookie's Kitchen"]
+      },
+      {
+        "question": "Which Ivy League school does Rory ultimately choose to attend?",
+        "options": ["Yale", "Harvard", "Princeton", "Columbia"]
+      }
+    ]
+  },
+  {
+    "category": "Grey's Anatomy",
+    "questions": [
+      {
+        "question": "What's the original name of the hospital in the early seasons?",
+        "options": ["Seattle Grace Hospital", "Mercy West", "St. Ambrose", "Metro General"]
+      },
+      {
+        "question": "What is the name of Meredith Grey's mother, also a famous surgeon?",
+        "options": ["Ellis Grey", "Adele Webber", "Catherine Fox", "Amelia Shepherd"]
+      },
+      {
+        "question": "What term do Meredith and Cristina use for each other, popularized by the line \"You're my ___\"?",
+        "options": ["Person", "Bestie", "Twisted Sister", "Ride or Die"]
+      },
+      {
+        "question": "Which character is nicknamed \"McDreamy\"?",
+        "options": ["Derek Shepherd", "Mark Sloan", "Alex Karev", "George O'Malley"]
+      },
+      {
+        "question": "What is Miranda Bailey's surgical specialty?",
+        "options": ["General surgery", "Cardiothoracic surgery", "Neurosurgery", "Pediatric surgery"]
+      }
+    ]
+  },
+  {
+    "category": "Into the Woods",
+    "questions": [
+      {
+        "question": "Who holds the record for most weeks ranked World No. 1 in golf?",
+        "options": ["Tiger Woods", "Elijah Wood", "James Woods", "Ronnie Wood"]
+      },
+      {
+        "question": "Who played Frodo Baggins in The Lord of the Rings trilogy?",
+        "options": ["Elijah Wood", "Tiger Woods", "Evan Rachel Wood", "James Woods"]
+      },
+      {
+        "question": "Who starred as Dolores Abernathy in HBO's Westworld?",
+        "options": ["Evan Rachel Wood", "Elijah Wood", "Ronnie Wood", "Tiger Woods"]
+      },
+      {
+        "question": "Who is the longtime guitarist for The Rolling Stones?",
+        "options": ["Ronnie Wood", "Tiger Woods", "James Woods", "Elijah Wood"]
+      },
+      {
+        "question": "Who's the actor known for roles in Casino and Contact (surname spelled with an \"s\")?",
+        "options": ["James Woods", "Tiger Woods", "Elijah Wood", "Ronnie Wood"]
+      }
+    ]
+  }
+]
