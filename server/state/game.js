@@ -48,7 +48,7 @@ const buildBoard = (categories) => {
 
 
 // will determine the order answers are delivered in, server will not mutate the array
-const shuffleAnswers = (answers) => {
+const shuffleInPlace = (answers) => {
     for (let i = answers.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [answers[i], answers[j]] = [answers[j], answers[i]];
@@ -57,15 +57,14 @@ const shuffleAnswers = (answers) => {
 }
 
 const prepQuestion = (question) => {
-    const correctAnswer = question.options[0];
-    
-    const questionPacket = {
-        question: question.question,
-        answer: correctAnswer,
-        deliveryOrder: shuffleAnswers([...question.options]),
-        bonus: false,
-        value: null,
-    }
-
-    return questionPacket;
-}
+  const perm = shuffleInPlace([...question.options.keys()]); 
+  return {
+    packet: {
+      question: question.question,
+      options: perm.map((srcIdx, id) => ({ id, text: question.options[srcIdx] })),
+      bonus: false,
+      value: null,
+    },
+    correctId: perm.indexOf(0),
+  };
+};

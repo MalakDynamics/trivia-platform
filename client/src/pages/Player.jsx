@@ -17,6 +17,7 @@ export default function Player() {
     const [name, setName] = useState(""); // username
     const [userList, setUserList] = useState([]);
     const [dotCount, setDotCount] = useState(0);
+    const [selected, setSelected] = useState(null);
 
     
     useEffect(() => {
@@ -48,7 +49,16 @@ export default function Player() {
         }
         
     }, [])
-
+    const buzzIAnswer = (e) => {
+        e.preventDefault();
+        socket.emit('submit:answer', answer, (response) => {
+            if (response.ok) {
+                
+            } else {
+                return
+            }
+        })
+    }
     const attemptJoin = (code) => {
         socket.emit('room:join', code, 'player', (response) => {
             if (response.ok) {
@@ -156,5 +166,33 @@ export default function Player() {
             </div>
         )
 
+
+    if (phase === 'buzzer') {
+        return (
+            <div>
+                <form onSubmit={buzzIAnswer}>
+                    <fieldset>
+                        <legend>Choose an answer</legend>
+
+                        {['a', 'b', 'c', 'd'].map((value) => (
+                        <div key={value}>
+                            <input
+                            type="radio"
+                            id={`opt-${value}`}
+                            name="answer"
+                            value={value}
+                            checked={selected === value}
+                            onChange={() => setSelected(value)}
+                            />
+                            <label htmlFor={`opt-${value}`}>Option {value.toUpperCase()} text</label>
+                        </div>
+                        ))}
+                    </fieldset>
+
+                    <button type="submit">Submit answer</button>
+                </form>
+            </div>
+        )
+    }
     return <div>unknown phase</div>
 }

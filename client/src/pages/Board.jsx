@@ -35,6 +35,17 @@ export default function Board() {
         navigate(`/board/${roomCode}`)
     };
 
+    const startGame = (e) => {
+        e.preventDefault();
+        socket.emit('start:game', (response) => {
+            if (response.ok) {
+                setPhase('buzzer'); //CHANGE LATER, WE JUST NEED TO GET THIS PART GOING
+            } else {
+                return
+            }
+        })
+    };
+
     const handleRoomCreate = (e) => {
         e.preventDefault();
         socket.emit('room:create', (response) => {
@@ -56,6 +67,8 @@ export default function Board() {
             }
         })
     }
+
+
     if (phase === 'join') {
         return (
             <div>
@@ -82,7 +95,12 @@ export default function Board() {
                 <h1>Game Code Is: {gameCode}</h1>
                 <QRCodeSVG value={`http://192.168.50.32:5173/player/${gameCode}`} size={256} />
                 <Chatroom messages={messages} onSend={send} />
+                <form onSubmit={startGame}>
+                    <button>Start Game</button>
+                </form>
             </div>
         )
     }
+
+    
 }
